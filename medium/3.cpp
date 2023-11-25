@@ -1,45 +1,54 @@
-#include <ios>
-#include <iostream>
 #include <string>
+#include <iostream>
 
 using namespace std;
 
 class Solution {
 public:
-  int lengthOfLongestSubstring(string s) {
-    const int N = 256;
-    bool chars[N] = {false};
-    int longest = 0;
+    int lengthOfLongestSubstring(string s) {
+        const int N = 256;
+        int chars[N];
+        for(int i=0; i<N; i++) { chars[i] = -1; }
 
-    int currentLenght = 0;
-    for (auto &c : s) {
-      int charIdx = c - 'a';
+        int longest = 0;
 
-      if (chars[charIdx]) {
-        longest = max(longest, currentLenght);
+        int current = 0;
+        for (int i = 0; i < s.size(); i++) {
+            char c = s[i];
+            int charIdx = c;
 
-        for (int i = 0; i < N; i++) {
-          chars[i] = false;
+            if (chars[charIdx] != -1) {
+                int len = i - current;
+                longest = max(len, longest);
+
+                for(int j=0; j<N; j++) {
+                    if(chars[j] < chars[charIdx]) {
+                        chars[j] = -1;
+                    }
+                }
+                current = chars[charIdx]+1;
+                chars[charIdx] = i;
+                continue;
+            }
+
+            chars[charIdx] = i;
         }
 
-        currentLenght = 1;
-        chars[charIdx] = true;
-        continue;
-      }
+        int len = s.size() - current;
+        longest = max(longest, len);
 
-      chars[charIdx] = true;
-      currentLenght++;
+        return longest;
     }
-
-    longest = max(longest, currentLenght);
-
-    return longest;
-  }
 };
 
+
 int main() {
-  Solution s;
-  cout << s.lengthOfLongestSubstring("abcabcbb") << endl;
-  cout << s.lengthOfLongestSubstring("bbbbb") << endl;
-  cout << s.lengthOfLongestSubstring("pwwkewabc") << endl;
+    Solution s;
+    cout << s.lengthOfLongestSubstring("abcabcbb") << endl;
+    cout << s.lengthOfLongestSubstring("bbbbb") << endl;
+    cout << s.lengthOfLongestSubstring("pwwkew") << endl;
+    cout << s.lengthOfLongestSubstring("au") << endl;
+    cout << s.lengthOfLongestSubstring("") << endl;
+    cout << s.lengthOfLongestSubstring(" ") << endl;
+    cout << s.lengthOfLongestSubstring("abba") << endl;
 }
